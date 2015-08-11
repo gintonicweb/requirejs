@@ -2,48 +2,83 @@
 
 namespace Requirejs\View\Helper;
 
+use Cake\Core\Configure;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
 
 class RequireHelper extends Helper
 {
     
-    /**
-     * TODO: doccomment
-     */
-    public function load()
+    public $helpers = ['Html', 'Url'];
+
+    public function load($require, $config = null)
     {
-        $modules = '';
-        if (!is_null($this->_View->get('requiredeps'))) {
-            $modules = "require([" . implode(',', $this->_View->get('requiredeps')) . "]);";
+        if ($config === null) {
+            $config = $require;
         }
-        $output = '<script src="/js/main.js" data-main="js/main"></script>';
-        $output .= "<script type='text/javascript'>";
-        $output .= "require(['main'], function () {";
-        $output .= $modules;
-        $output .= '});</script>';
+
+        $loader = $this->_getLoader($require, $config);
+        $modules = $this->_getModules($config);
+
+        return $loader . $modules;
+    }
+
+    protected function _getModules($config)
+    {
+        list($plugin, $name) = $this->_View->pluginSplit($config, false);
+
+        $modules = '';
+        if (!is_null($this->_View->get('requireModules'))) {
+            $modules = implode(',', $this->_View->get('requireModules'));
+        }
+
+        $script =  "require(['" . $name . "'], function(){require([";
+        $script .= $modules;
+        $script .= "]);});";
+
+        $output = $this->Html->scriptBlock($script);
+
         return $output;
     }
 
-    /**
-     * TODO: doccomment
-     */
-    public function req($name)
+    protected function _getLoader($require, $config)
     {
-        if (!isset($this->_View->viewVars['requiredeps'])) {
-            $this->_View->viewVars['requiredeps'] = [];
-        }
-        array_push($this->_View->viewVars['requiredeps'], "'" . $name . "'");
-        return;
+        $config = $this->Url->assetUrl(
+            $config,
+            ['pathPrefix' => Configure::read('App.jsBaseUrl'), 'ext' => '.js']
+        );
+        $loader = $this->Html->script($require, [
+            'data-main' => $config
+        ]);
+        return $loader;
     }
-    
-    /**
-     * TODO: doccomment
-     */
-    public function ajaxReq($name)
+
+    public function module($name, $preLoad = true)
     {
-        return '<script>' .
-            'require(["' . $name . '"]);' .
-            '</script>';
+        list($plugin, $path) = $this->_View->pluginSplit($name, false);
+
+        if (!empty($plugin)) {
+            $name = $this->Url->assetUrl(
+                $name,
+                ['pathPrefix' => Configure::read('App.jsBaseUrl'), 'ext' => '.js']
+            );
+        }
+        if($preLoad) {
+            return $this->_preLoadModule($name);
+        }
+
+        return $this->_loadModule($name);
+    }
+
+    protected function _preLoadModule($name) 
+    {
+        if (!isset($this->_View->viewVars['requireModules'])) {
+            $this->_View->viewVars['requireModules'] = [];
+        }
+        array_push($this->_View->viewVars['requireModules'], "'" . $name . "'");
+    }
+
+    protected function _loadModule($name) {
+        return '<script>' .  'require(["' . $name . '"]);' .  '</script>';
     }
 }

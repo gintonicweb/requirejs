@@ -1,5 +1,6 @@
 <?php
-namespace Require\View\Helper;
+
+namespace Requirejs\View\Helper;
 
 use Cake\Utility\Inflector;
 use Cake\View\Helper;

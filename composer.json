@@ -1,5 +1,5 @@
 {
-    "name": "gintonicweb/require",
+    "name": "gintonicweb/requirejs",
     "description": "Require plugin for CakePHP",
     "type": "cakephp-plugin",
     "require": {
@@ -11,12 +11,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Require\\": "src"
+            "Requirejs\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Require\\Test\\": "tests",
+            "Requirejs\\Test\\": "tests",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
     }

@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/gintonicweb/requirejs.svg)](https://travis-ci.org/gintonicweb/GintonicCMS)
+[![Coverage Status](https://coveralls.io/repos/gintonicweb/requirejs/badge.svg?branch=master&service=github)](https://coveralls.io/github/gintonicweb/requirejs?branch=master)
+[![Software License](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE.txt)
+
 # Require plugin for CakePHP
 
 Load javascript modules (AMD) asynchroneously from anywhere in your views
@@ -12,7 +16,7 @@ this plugin is a work in progress
 Install the plugin using [composer](http://getcomposer.org). 
 
 ```
-"gintonicweb/requirejs": "dev-master"
+"gintonicweb/requirejs": "~0.0"
 ```
 
 Load it in config/bootstrap.php
@@ -24,7 +28,7 @@ Plugin::load('Requirejs');
 ## Example
 
 
-Add the following lines to your default layout `default.ctp`
+In your default layout: 
 
 ```
 <?php 

@@ -16,14 +16,14 @@ class RequireHelper extends Helper
 
     /**
      * Fetch all previously loaded modules and requirejs lib path and outputs the
-     * <script> tag to initialize the loader.
+     * `<script>` tag to initialize the loader.
      *
      * Parameters accept the plugin notation so it's possible to load the files
      * like this $this->Require->load('Requirejs.require', 'TwbsTheme.main');
      *
      * @param string $require the path to the require.js library
      * @param string $config path of the main config file if not bundled with require.js
-     * @return string full <script> tag to initialize requirejs
+     * @return string full `<script>` tag to initialize requirejs
      */
     public function load($require, $config = null)
     {
@@ -38,13 +38,13 @@ class RequireHelper extends Helper
     }
 
     /**
-     * Return a <script> block that initializes the requirejs main configuration
+     * Return a `<script>` block that initializes the requirejs main configuration
      * file and loads all modules that have been loaded.
      *
      * Note that the requirejs library must be loaded befor this block
      *
      * @param string $config path of the main config file
-     * @return string content of the <script> tag that initialize requirejs
+     * @return string content of the `<script>` tag that initialize requirejs
      */
     protected function _getModules($config)
     {
@@ -65,11 +65,11 @@ class RequireHelper extends Helper
     }
 
     /**
-     * Builds the <script> block that loads the requirejs library.
+     * Builds the `<script>` block that loads the requirejs library.
      *
      * @param string $require path of the requirejs library
      * @param string $config path of the main config file
-     * @return string content of the <script> tag that initialize requirejs
+     * @return string content of the `<script>` tag that initialize requirejs
      */
     protected function _getLoader($require, $config)
     {
@@ -129,7 +129,7 @@ class RequireHelper extends Helper
     }
 
     /**
-     * Load module in a <script> block. This method is useful once the requirejs
+     * Load module in a `<script>` block. This method is useful once the requirejs
      * lib has already been loaded in the page
      *
      * @param string $name name of the js module

@@ -1,115 +1,27 @@
 <?php
-
-use Cake\Cache\Cache;
-use Cake\Core\Configure;
-use Cake\Core\Plugin;
-use Cake\Datasource\ConnectionManager;
-use Cake\I18n\I18n;
-use Cake\Log\Log;
-use Cake\Routing\Router;
-
-require_once 'vendor/autoload.php';
-
-if (!defined('DS')) {
-    define('DS', DIRECTORY_SEPARATOR);
+/**
+ * Test suite bootstrap.
+ *
+ * This function is used to find the location of CakePHP whether CakePHP
+ * has been installed as a dependency of the plugin, or the plugin is itself
+ * installed as a dependency of an application.
+ */
+$findRoot = function ($root) {
+    do {
+        $lastRoot = $root;
+        $root = dirname($root);
+        if (is_dir($root . '/vendor/cakephp/cakephp')) {
+            return $root;
+        }
+    } while ($root !== $lastRoot);
+    throw new Exception("Cannot find the root of the application, unable to run tests");
+};
+$root = $findRoot(__FILE__);
+unset($findRoot);
+chdir($root);
+if (file_exists($root . '/config/bootstrap.php')) {
+    require $root . '/config/bootstrap.php';
+    return;
 }
-
-define('ROOT', dirname(__DIR__));
-define('APP_DIR', 'src');
-
-define('TMP', sys_get_temp_dir() . DS);
-define('LOGS', TMP . 'logs' . DS);
-define('CACHE', TMP . 'cache' . DS);
-define('SESSIONS', TMP . 'sessions' . DS);
-
-define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'vendor' . DS . 'cakephp' . DS . 'cakephp');
-define('CORE_PATH', CAKE_CORE_INCLUDE_PATH . DS);
-define('CAKE', CORE_PATH . 'src' . DS);
-define('TEST_APP', ROOT . DS . 'tests' . DS . 'test_app' . DS);
-
-// Point app constants to the test app.
-define('APP', TEST_APP . APP_DIR . DS);
-define('WWW_ROOT', TEST_APP . 'webroot' . DS);
-define('CONFIG', TEST_APP . 'config' . DS);
-
-$loader = new \Cake\Core\ClassLoader;
-$loader->register();
-$loader->addNamespace('App', APP);
-
-//@codingStandardsIgnoreStart
-@mkdir(LOGS);
-@mkdir(SESSIONS);
-@mkdir(CACHE);
-@mkdir(CACHE . 'views');
-@mkdir(CACHE . 'models');
-//@codingStandardsIgnoreEnd
-
-require_once CORE_PATH . 'config/bootstrap.php';
-
-date_default_timezone_set('UTC');
-mb_internal_encoding('UTF-8');
-
-Configure::write('debug', true);
-Configure::write('App', [
-    'namespace' => 'App',
-    'encoding' => 'UTF-8',
-    'base' => false,
-    'baseUrl' => false,
-    'dir' => APP_DIR,
-    'webroot' => 'webroot',
-    'wwwRoot' => WWW_ROOT,
-    'fullBaseUrl' => 'http://localhost',
-    'imageBaseUrl' => 'img/',
-    'jsBaseUrl' => 'js/',
-    'cssBaseUrl' => 'css/',
-    'paths' => [
-        'plugins' => [TEST_APP . 'Plugin' . DS],
-        'templates' => [APP . 'Template' . DS],
-        'locales' => [APP . 'Locale' . DS],
-    ]
-]);
-
-Cache::config([
-    '_cake_core_' => [
-        'engine' => 'File',
-        'prefix' => 'cake_core_',
-        'serialize' => true
-    ],
-    '_cake_model_' => [
-        'engine' => 'File',
-        'prefix' => 'cake_model_',
-        'serialize' => true
-    ]
-]);
-
-// Ensure default test connection is defined
-if (!getenv('db_dsn')) {
-    putenv('db_dsn=sqlite:///:memory:');
-}
-
-ConnectionManager::config('test', ['url' => getenv('db_dsn')]);
-ConnectionManager::config('test_custom_i18n_datasource', ['url' => getenv('db_dsn')]);
-
-Configure::write('Session', [
-    'defaults' => 'php'
-]);
-
-Log::config([
-    'debug' => [
-        'engine' => 'Cake\Log\Engine\FileLog',
-        'levels' => ['notice', 'info', 'debug'],
-        'file' => 'debug',
-    ],
-    'error' => [
-        'engine' => 'Cake\Log\Engine\FileLog',
-        'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
-        'file' => 'error',
-    ]
-]);
-
-Carbon\Carbon::setTestNow(Carbon\Carbon::now());
-ini_set('intl.default_locale', 'en_US');
-
-Router::reload();
-Cake\Routing\DispatcherFactory::add('Routing');
-Cake\Routing\DispatcherFactory::add('ControllerFactory');
+require $root . '/vendor/cakephp/cakephp/tests/bootstrap.php';
+\Cake\Core\Plugin::load('Muffin/Slug', ['path' => dirname(dirname(__FILE__)) . DS]);

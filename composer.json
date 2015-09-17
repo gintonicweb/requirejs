@@ -4,10 +4,11 @@
     "type": "cakephp-plugin",
     "require": {
         "php": ">=5.4.16",
-        "cakephp/cakephp": "~3.1"
+        "cakephp/cakephp": "~3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "cakephp/cakephp-codesniffer": "2.*"
     },
     "autoload": {
         "psr-4": {
@@ -16,8 +17,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Requirejs\\Test\\": "tests",
-            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+            "Requirejs\\Test\\": "tests"
         }
     }
 }

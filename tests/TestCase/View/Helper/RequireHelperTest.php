@@ -9,7 +9,18 @@ use Requirejs\View\Helper\RequireHelper;
  * Provide access to private members and methods
  */
 //@codingStandardsIgnoreStart
-class RequireChild extends RequireHelper
+class ViewTest extends View
+{
+    public function pluginSplit($name, $fallback = true)
+    {
+        return pluginSplit($name);
+    }
+}
+/**
+ * Provide access to private members and methods
+ */
+//@codingStandardsIgnoreStart
+class RequireTest extends RequireHelper
 {
     public $_View;
     public function _getModules($config)
@@ -45,8 +56,8 @@ class RequireHelperTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $view = new View();
-        $this->Require = new RequireChild($view);
+        $view = new ViewTest();
+        $this->Require = new RequireTest($view);
     }
 
     /**
@@ -79,14 +90,15 @@ class RequireHelperTest extends TestCase
      */
     public function testLoad()
     {
-        $tag = $this->Require->module('ModuleA');
-        $tag = $this->Require->load('require', 'config');
-
-        $this->assertContains('src="/js/require.js"', $tag);
+        $tag = $this->Require->load('requireA', 'config');
+        $this->assertContains('src="/js/requireA.js"', $tag);
         $this->assertContains('data-main="/js/config.js"', $tag);
         $this->assertContains('require(', $tag);
         $this->assertContains("['config']", $tag);
-        $this->assertContains("['ModuleA']", $tag);
+
+        $tag = $this->Require->load('requireB');
+        $this->assertContains('src="/js/requireB.js"', $tag);
+        $this->assertContains('data-main="/js/requireB.js"', $tag);
     }
 
     /**
@@ -114,12 +126,10 @@ class RequireHelperTest extends TestCase
      */
     public function testGetLoader()
     {
-        $tag = $this->Require->load('require', 'config');
+        $tag = $this->Require->_getLoader('require', 'config');
 
         $this->assertContains('src="/js/require.js"', $tag);
         $this->assertContains('data-main="/js/config.js"', $tag);
-        $this->assertContains('require(', $tag);
-        $this->assertContains("['config']", $tag);
     }
 
     /**
@@ -139,9 +149,13 @@ class RequireHelperTest extends TestCase
         $result = $this->Require->module('ModuleB', false);
         $this->assertNotNull($result);
         $this->assertFalse(in_array(
-            "'ModuleC'",
+            "'ModuleB'",
             $this->Require->_View->viewVars['requireModules']
         ));
+
+        $result = $this->Require->module('Plugin.ModuleC', false);
+        $this->assertNotNull($result);
+        $this->assertContains('/plugin/js/ModuleC', $result);
     }
 
     /**

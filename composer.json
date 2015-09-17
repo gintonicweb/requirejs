@@ -1,7 +1,21 @@
 {
     "name": "gintonicweb/requirejs",
-    "description": "Require plugin for CakePHP",
+    "description": "Requirejs helper for CakePHP",
     "type": "cakephp-plugin",
+    "keywords": ["cakephp","gintonic","requirejs"],
+    "homepage": "http://gintoniccms.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Philippe Lafrance",
+            "homepage": "http://phillafrance.com",
+            "role": "Author"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/gintonicweb/requirejs/issues",
+        "source": "https://github.com/gintonicweb/requirejs"
+    },
     "require": {
         "php": ">=5.4.16",
         "cakephp/cakephp": "~3.0"

@@ -7,10 +7,6 @@
 Load javascript modules (AMD) asynchroneously from anywhere in your views
 via [requirejs](http://requirejs.org/).
 
-## Warning
-
-this plugin is a work in progress
-
 ## Installation
 
 Install the plugin using [composer](http://getcomposer.org). 

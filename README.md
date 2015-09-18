@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/gintonicweb/requirejs.svg)](https://travis-ci.org/gintonicweb/GintonicCMS)
 [![Coverage Status](https://coveralls.io/repos/gintonicweb/requirejs/badge.svg?branch=master&service=github)](https://coveralls.io/github/gintonicweb/requirejs?branch=master)
+[![Packagist](https://img.shields.io/packagist/dt/gintonicweb/requirejs.svg)]()
 [![Software License](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE.txt)
 
 # Require plugin for CakePHP

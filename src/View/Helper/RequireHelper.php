@@ -23,16 +23,17 @@ class RequireHelper extends Helper
      *
      * @param string $require the path to the require.js library
      * @param string $config path of the main config file if not bundled with require.js
+     * @param array $plugins array of plugins that need to
      * @return string full `<script>` tag to initialize requirejs
      */
-    public function load($require, $config = null)
+    public function load($require, $config = null, $plugins = [])
     {
         if ($config === null) {
             $config = $require;
         }
 
         $loader = $this->_getLoader($require, $config);
-        $modules = $this->_getModules($config);
+        $modules = $this->_getModules($config, $plugins);
 
         return $loader . $modules;
     }
@@ -44,18 +45,29 @@ class RequireHelper extends Helper
      * Note that the requirejs library must be loaded befor this block
      *
      * @param string $config path of the main config file
+     * @param array $plugins array of plugins that need to
      * @return string content of the `<script>` tag that initialize requirejs
      */
-    protected function _getModules($config)
+    protected function _getModules($config, $plugins = [])
     {
-        list($plugin, $name) = $this->_View->pluginSplit($config, false);
+        list($plugin, $config) = $this->_View->pluginSplit($config, false);
 
         $modules = '';
         if (!is_null($this->_View->get('requireModules'))) {
             $modules = implode(',', $this->_View->get('requireModules'));
         }
 
-        $script = "require(['" . $name . "'], function(){require([";
+        foreach ($plugins as $key => $plugin) {
+            $plugin = $this->Url->assetUrl(
+                $plugin,
+                ['pathPrefix' => Configure::read('App.jsBaseUrl'), 'ext' => '.js']
+            );
+            $plugins[$key] = $plugin;
+        }
+        array_unshift($plugins, $config);
+        $dependencies = implode("', '", $plugins);
+
+        $script = "require(['" . $dependencies . "'], function(){require([";
         $script .= $modules;
         $script .= "]);});";
 
@@ -73,6 +85,7 @@ class RequireHelper extends Helper
      */
     protected function _getLoader($require, $config)
     {
+        $this->Url->theme = null;
         $config = $this->Url->assetUrl(
             $config,
             ['pathPrefix' => Configure::read('App.jsBaseUrl'), 'ext' => '.js']

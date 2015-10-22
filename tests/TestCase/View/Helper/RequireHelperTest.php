@@ -23,7 +23,7 @@ class ViewTest extends View
 class RequireTest extends RequireHelper
 {
     public $_View;
-    public function _getModules($config)
+    public function _getModules($config, $plugins = [])
     {
         return parent::_getModules($config);
     }

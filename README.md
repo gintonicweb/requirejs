@@ -42,8 +42,12 @@ In your default layout:
     $require->module('test/demo');
 
     // At the bottom of the layout, load the requirejs library with the 
-    // configuration file which will be used as the entry point
+    // configuration file which will be used as the entry point.
     echo $require->load('Requirejs.require', 'Requirejs.config')
+
+    // If you happen to have your configuration spread across multiple
+    // files, you can add them like this
+    echo $require->load('Requirejs.require', 'Requirejs.config', ['SomePlugin.config'])
 ?>
 ```
 

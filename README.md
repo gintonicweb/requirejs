@@ -13,7 +13,7 @@ via [requirejs](http://requirejs.org/).
 Install the plugin using [composer](http://getcomposer.org). 
 
 ```
-"gintonicweb/requirejs": "~0.0"
+"gintonicweb/requirejs": "~0.1"
 ```
 
 Load it in config/bootstrap.php

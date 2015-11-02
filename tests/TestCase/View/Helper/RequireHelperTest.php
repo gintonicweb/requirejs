@@ -25,7 +25,7 @@ class RequireTest extends RequireHelper
     public $_View;
     public function _getModules($config, $plugins = [])
     {
-        return parent::_getModules($config);
+        return parent::_getModules($config, $plugins);
     }
     public function _getLoader($require, $config)
     {
@@ -99,6 +99,12 @@ class RequireHelperTest extends TestCase
         $tag = $this->Require->load('requireB');
         $this->assertContains('src="/js/requireB.js"', $tag);
         $this->assertContains('data-main="/js/requireB.js"', $tag);
+
+        $tag = $this->Require->load('requireC', 'config', ['Test.config2']);
+        $this->assertContains('/test/js/config2.js', $tag);
+
+        $tag = $this->Require->load('requireD', 'config', ['config2']);
+        $this->assertContains('/js/config2.js', $tag);
     }
 
     /**

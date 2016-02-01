@@ -5,6 +5,7 @@ namespace Requirejs\View\Helper;
 use Cake\Core\Configure;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
+use Cake\Routing\Router;
 
 class RequireHelper extends Helper
 {
@@ -36,6 +37,25 @@ class RequireHelper extends Helper
         $modules = $this->_getModules($config, $plugins);
 
         return $loader . $modules;
+    }
+    
+    /**
+     * Set requirejs baseUrl argument.
+     *
+     * Note that this method must be called before loading requirejs
+     *
+     * If parameter $path is undefined, the base url of the app will be found automatically
+     *
+     * @param string $path the base url of the app
+     * @return string full `<script>` tag with the baseUrl setting
+     */
+    public function basepath($path = null)
+    {
+        if ($path === null) {
+            $path = Router::url('/');
+        }
+
+        return $this->Html->scriptBlock('var require={baseUrl:"'.$path.'"})');
     }
 
     /**

@@ -3,9 +3,9 @@
 namespace Requirejs\View\Helper;
 
 use Cake\Core\Configure;
+use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
-use Cake\Routing\Router;
 
 class RequireHelper extends Helper
 {
@@ -55,7 +55,7 @@ class RequireHelper extends Helper
             $path = Router::url('/');
         }
 
-        return $this->Html->scriptBlock('var require={baseUrl:"'.$path.'"})');
+        return $this->Html->scriptBlock('var require={baseUrl:"' . $path . '"})');
     }
 
     /**

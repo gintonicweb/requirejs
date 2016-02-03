@@ -9,7 +9,7 @@ use Cake\View\Helper;
 
 class RequireHelper extends Helper
 {
-    
+
     /**
      * Base Cakephp helpers
      */
@@ -38,7 +38,7 @@ class RequireHelper extends Helper
 
         return $loader . $modules;
     }
-    
+
     /**
      * Set requirejs baseUrl argument.
      *
@@ -55,7 +55,7 @@ class RequireHelper extends Helper
             $path = Router::url('/');
         }
 
-        return $this->Html->scriptBlock('var require={baseUrl:"' . $path . '"})');
+        return $this->Html->scriptBlock('var require={baseUrl:"' . $path . '"}');
     }
 
     /**
@@ -72,9 +72,11 @@ class RequireHelper extends Helper
     {
         list($plugin, $config) = $this->_View->pluginSplit($config, false);
 
-        $modules = '';
+        $modules = "'" . $config . "'";
         if (!is_null($this->_View->get('requireModules'))) {
-            $modules = implode(',', $this->_View->get('requireModules'));
+            $modules = $this->_View->get('requireModules');
+            array_unshift($modules, "'" . $config . "'");
+            $modules = implode(',', $modules);
         }
 
         foreach ($plugins as $key => $plugin) {
@@ -84,7 +86,7 @@ class RequireHelper extends Helper
             );
             $plugins[$key] = $plugin;
         }
-        array_unshift($plugins, $config);
+
         $dependencies = implode("', '", $plugins);
 
         $script = "require(['" . $dependencies . "'], function(){require([";
@@ -110,16 +112,19 @@ class RequireHelper extends Helper
             $config,
             ['pathPrefix' => Configure::read('App.jsBaseUrl'), 'ext' => '.js']
         );
-        $loader = $this->Html->script($require, [
-            'data-main' => $config
-        ]);
+        $loader = $this->Html->script(
+            $require,
+            [
+                'data-main' => $config
+            ]
+        );
         return $loader;
     }
 
     /**
      * Add a javascript module to be loaded on the page.
      *
-     * Every module that is called prior to the load() commant should be pre-loaded
+     * Every module that is called prior to the load() command should be pre-loaded
      * and will be outputted along with the loader.
      *
      * Every module that comes after the loader, for example via ajax, should

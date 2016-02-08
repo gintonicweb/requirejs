@@ -40,9 +40,6 @@ class RequireHelper extends Helper
      * Parameters accept the plugin notation so it's possible to load the files
      * like this $this->Require->load('Requirejs.require', 'TwbsTheme.main');
      *
-     * @param string $require the path to the require.js library
-     * @param string $config path of the main config file if not bundled with require.js
-     * @param array $plugins array of plugins that need to
      * @return string full `<script>` tag to initialize requirejs
      */
     public function load()
@@ -60,8 +57,6 @@ class RequireHelper extends Helper
      *
      * Note that the requirejs library must be loaded before this block
      *
-     * @param string $config path of the main config file
-     * @param array $plugins array of plugins that need to
      * @return string content of the `<script>` tag that initialize requirejs
      */
     protected function _getInlineConfig()
@@ -76,8 +71,6 @@ class RequireHelper extends Helper
      *
      * Note that the requirejs library must be loaded before this block
      *
-     * @param string $config path of the main config file
-     * @param array $plugins array of plugins that need to
      * @return string content of the `<script>` tag that initialize requirejs
      */
     protected function _getModules()
@@ -105,8 +98,6 @@ class RequireHelper extends Helper
     /**
      * Builds the `<script>` block that loads the requirejs library.
      *
-     * @param string $require path of the requirejs library
-     * @param string $config path of the main config file
      * @return string content of the `<script>` tag that initialize requirejs
      */
     protected function _getLoader()
@@ -124,7 +115,6 @@ class RequireHelper extends Helper
      * be loaded right away by setting the "preLoad" option to false
      *
      * @param string $name name of the js module to load
-     * @param bool $preLoad bundles the module with initial loader or not
      * @return void|string loader tag is outputted on post-load
      */
     public function module($name)

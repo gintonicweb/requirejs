@@ -45,10 +45,7 @@ public $helpers = [
 ];
 ```
 
-In your default layout, use `module()` to load a javascript module, and `load()` to load requirejs.  
-
 Here's how to define a javascript dependency. CakePHP plugin notation is supported. The following will load `'/requirejs/js/app/demo.js'`
-
 ```
 <?= $require->module('Requirejs.app/demo') ?>
 ```

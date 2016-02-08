@@ -16,30 +16,6 @@ class ViewTest extends View
         return pluginSplit($name);
     }
 }
-/**
- * Provide access to private members and methods
- */
-//@codingStandardsIgnoreStart
-class RequireTest extends RequireHelper
-{
-    public $_View;
-    public function _getModules($config, $plugins = [])
-    {
-        return parent::_getModules($config, $plugins);
-    }
-    public function _getLoader($require, $config)
-    {
-        return parent::_getLoader($require, $config);
-    }
-    public function _preLoadModule($name)
-    {
-        return parent::_preLoadModule($name);
-    }
-    public function _loadModule($name)
-    {
-        return parent::_loadModule($name);
-    }
-}
 //@codingStandardsIgnoreEnd
 
 /**
@@ -48,120 +24,68 @@ class RequireTest extends RequireHelper
 class RequireHelperTest extends TestCase
 {
 
-    /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $view = new ViewTest();
-        $this->Require = new RequireTest($view);
-    }
-
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        unset($this->require);
-
-        parent::tearDown();
-    }
-
-    /**
-     * Test initial setup
-     *
-     * @return void
-     */
     public function testInitialization()
     {
-        $this->assertContains('Html', $this->Require->helpers);
-        $this->assertContains('Url', $this->Require->helpers);
+        $require = new RequireHelper(new ViewTest());
+        $this->assertContains('Html', $require->helpers);
+        $this->assertContains('Url', $require->helpers);
     }
 
-    /**
-     * Test load() method
-     *
-     * @return void
-     */
     public function testLoad()
     {
-        $tag = $this->Require->load('requireA', 'config');
-        $this->assertContains('src="/js/requireA.js"', $tag);
-        $this->assertContains('data-main="/js/config.js"', $tag);
-        $this->assertContains('require(', $tag);
-        $this->assertContains("['config']", $tag);
-
-        $tag = $this->Require->load('requireB');
-        $this->assertContains('src="/js/requireB.js"', $tag);
-        $this->assertContains('data-main="/js/requireB.js"', $tag);
-
-        $tag = $this->Require->load('requireC', 'config', ['Test.config2']);
-        $this->assertContains('/test/js/config2.js', $tag);
-
-        $tag = $this->Require->load('requireD', 'config', ['config2']);
-        $this->assertContains('/js/config2.js', $tag);
+        $require = new RequireHelper(new ViewTest());
+        $result = $require->load();
+        $expected = '<script src="/requirejs/js/require.js"></script>';
+        $this->assertContains($expected, $result);
     }
 
-    /**
-     * Test _getModules() method
-     *
-     * @return void
-     */
-    public function testGetModules()
+    public function testGetInlineConfig()
     {
-        $this->Require->_View->viewVars['requireModules'] = [
-            "'ModuleA'",
-            "'ModuleB'",
-            "'ModuleC'",
-        ];
-        $this->assertContains(
-            "require(['ModuleA','ModuleB','ModuleC']);",
-            $this->Require->_getModules('config')
-        );
+        $require = new RequireHelper(new ViewTest(),[
+            'inlineConfig' => [
+                'baseUrl' => '/',
+            ]
+        ]);
+        $result = $require->load();
+        $expected = 
+'<script>
+//<![CDATA[
+var require = {"baseUrl":"/"}
+//]]>
+</script>';
+        $this->assertContains($expected, $result);
     }
 
-    /**
-     * Test _getLoader() method
-     *
-     * @return void
-     */
-    public function testGetLoader()
+    public function testConfigFiles()
     {
-        $tag = $this->Require->_getLoader('require', 'config');
-
-        $this->assertContains('src="/js/require.js"', $tag);
-        $this->assertContains('data-main="/js/config.js"', $tag);
+        $require = new RequireHelper(new ViewTest(),[
+            'configFiles' => [
+                'Test.config',
+            ],
+        ]);
+        $result = $require->load();
+        $expected = 
+"<script>
+//<![CDATA[
+require(['/test/js/config.js'], function(){require([]);});
+//]]>
+</script>";
+        $this->assertContains($expected, $result);
     }
 
-    /**
-     * Test module() method
-     *
-     * @return void
-     */
-    public function testModule()
+    public function testModules()
     {
-        $result = $this->Require->module('ModuleA');
-        $this->assertNull($result);
-        $this->assertContains(
-            "'ModuleA'",
-            $this->Require->_View->viewVars['requireModules']
-        );
-
-        $result = $this->Require->module('ModuleB', false);
-        $this->assertNotNull($result);
-        $this->assertFalse(in_array(
-            "'ModuleB'",
-            $this->Require->_View->viewVars['requireModules']
-        ));
-
-        $result = $this->Require->module('Plugin.ModuleC', false);
-        $this->assertNotNull($result);
-        $this->assertContains('/plugin/js/ModuleC', $result);
+        $require = new RequireHelper(new ViewTest());
+        $require->module('ModuleA');
+        $require->module('ModuleB');
+        $result = $require->load();
+        $expected = 
+"<script>
+//<![CDATA[
+require([''], function(){require(['ModuleA','ModuleB']);});
+//]]>
+</script>";
+        $this->assertContains($expected, $result);
     }
 
     /**
@@ -171,27 +95,11 @@ class RequireHelperTest extends TestCase
      */
     public function testPreLoadModule()
     {
-        $this->Require->_preLoadModule('ModuleA');
-        $this->Require->_preLoadModule('ModuleB');
-
-        $this->assertContains(
-            "'ModuleA'",
-            $this->Require->_View->viewVars['requireModules']
-        );
-        $this->assertContains(
-            "'ModuleB'",
-            $this->Require->_View->viewVars['requireModules']
-        );
-    }
-
-    /**
-     * Test _ladModule() method
-     *
-     * @return void
-     */
-    public function testLoadModule()
-    {
-        $result = $this->Require->_loadModule('ModuleA');
-        $this->assertEquals('<script>require(["ModuleA"]);</script>', $result);
+        $require = new RequireHelper(new ViewTest());
+        $result = $require->module('ModuleA');
+        $this->assertEquals($result, '');
+        $result = $require->load();
+        $result = $require->module('ModuleB');
+        $this->assertEquals($result, '<script>require(["ModuleB"]);</script>');
     }
 }

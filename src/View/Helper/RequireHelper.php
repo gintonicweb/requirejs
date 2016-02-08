@@ -66,7 +66,7 @@ class RequireHelper extends Helper
      */
     protected function _getInlineConfig()
     {
-        $script = "var require =";
+        $script = "var require = ";
         $script .= json_encode($this->config('inlineConfig'), JSON_UNESCAPED_SLASHES);
         return $this->Html->scriptBlock($script);
     }

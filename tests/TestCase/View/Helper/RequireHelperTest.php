@@ -113,6 +113,12 @@ require([''], function(){require(['ModuleA','ModuleB']);});
         $this->assertEquals($result, '');
         $result = $require->load();
         $result = $require->module('ModuleB');
-        $this->assertEquals($result, '<script>require(["ModuleB"]);</script>');
+        $expected = 
+'<script>
+//<![CDATA[
+require(["ModuleB"]);
+//]]>
+</script>';
+        $this->assertEquals($result, $expected);
     }
 }

@@ -156,6 +156,6 @@ class RequireHelper extends Helper
      */
     protected function _loadModule($name)
     {
-        return '<script>' . 'require(["' . $name . '"]);' . '</script>';
+        return $this->Html->scriptBlock('require(["' . $name . '"]);');
     }
 }

@@ -35,7 +35,7 @@ class RequireHelperTest extends TestCase
     {
         $require = new RequireHelper(new ViewTest());
         $result = $require->load();
-        $expected = '<script src="/requirejs/js/require.js"></script>';
+        $expected = '<script src="//cdnjs.cloudflare.com/ajax/libs/require.js';
         $this->assertContains($expected, $result);
     }
 

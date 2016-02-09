@@ -33,13 +33,14 @@ Load this helper from your controller and define your config options.
 ```
 public $helpers = [
     'Requirejs.Require' => [
-        'require' => 'Requirejs.require',
+        'require' => 'myrequire',
         'configFiles' => [
             'myconfig',
             'Someplugin.config',
         ],
         'inlineConfig' => [
             'baseUrl' => '/',
+            'urlArgs' => 'bust=0',
         ],
     ],
 ];

@@ -40,10 +40,13 @@ class RequireHelper extends Helper
      * Parameters accept the plugin notation so it's possible to load the files
      * like this $this->Require->load('Requirejs.require', 'TwbsTheme.main');
      *
+     * @param array $configFiles additional config files to load on the fly
      * @return string full `<script>` tag to initialize requirejs
      */
-    public function load()
+    public function load(array $configFiles = [])
     {
+        $config = $configFiles + $this->config('configFiles');
+        $this->config('configFiles', $configFiles);
         $inlineConfig = $this->_getInlineConfig();
         $loader = $this->_getLoader();
         $modules = $this->_getModules();

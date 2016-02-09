@@ -39,6 +39,19 @@ class RequireHelperTest extends TestCase
         $this->assertContains($expected, $result);
     }
 
+    public function testLoadConfig()
+    {
+        $require = new RequireHelper(new ViewTest());
+        $result = $require->load(['Test.config']);
+        $expected = 
+"<script>
+//<![CDATA[
+require(['/test/js/config.js'], function(){require([]);});
+//]]>
+</script>";
+        $this->assertContains($expected, $result);
+    }
+
     public function testGetInlineConfig()
     {
         $require = new RequireHelper(new ViewTest(),[

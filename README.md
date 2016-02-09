@@ -45,17 +45,15 @@ public $helpers = [
 ];
 ```
 
-Here's how to define a javascript dependency. CakePHP plugin notation is supported. The following will load `'/requirejs/js/app/demo.js'`
+Here's how load javascript modules. CakePHP plugin notation is supported. When
+no plugins are defined, the module name is passed as-is to requirejs, allowing
+you to handle the path the way you like in your own `config.js`. Once in your
+template, call `load()` to load the requirejs lib. It's also possible
+to pass an array of additional config modules to the load method if needed.
+
 ```
 <?= $require->module('Requirejs.app/demo') ?>
-```
-
-When no plugins are defined, the module name is passed as-is to requirejs, allows you to handle the path the way you like in config.js.
-```
-<?= require->module('test/demo') ?>
-```
-
-Load requirejs somewhere in your template. You'll usually want to keep that at the bottom of your layout.
-```
+<?= $require->module('test/demo') ?>
 <?= $require->load() ?>
 ```
+

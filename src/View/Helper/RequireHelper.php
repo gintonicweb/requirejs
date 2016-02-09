@@ -18,7 +18,7 @@ class RequireHelper extends Helper
      * {@inherit}
      */
     protected $_defaultConfig = [
-        'require' => 'Requirejs.require',
+        'require' => '//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.js',
         'configFiles' => [],
         'inlineConfig' => []
     ];

@@ -35,8 +35,8 @@ public $helpers = [
     'Requirejs.Require' => [
         'require' => 'Requirejs.require',
         'configFiles' => [
-            'TwbsTheme.config',
-            'Images.config',
+            'myconfig',
+            'Someplugin.config',
         ],
         'inlineConfig' => [
             'baseUrl' => '/',

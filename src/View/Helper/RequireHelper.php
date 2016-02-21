@@ -37,15 +37,15 @@ class RequireHelper extends Helper
     /**
      * Constructor method.
      *
-     * @param array $config The configuration settings provided to this helper.
-     * @return void
+     * @param \Cake\View\View $View The View the helper is being attached to.
+     * @param array $config Configuration settings for the helper.
      */
-    public function initialize(array $config)
+    public function __construct($View, array $config = [])
     {
-        parent::initialize($config);
         $this->config('inlineConfig', [
             'baseUrl' => $this->_getAppBase()
         ]);
+        parent::__construct($View, $config);
     }
 
     /**

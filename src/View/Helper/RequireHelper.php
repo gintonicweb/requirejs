@@ -3,12 +3,13 @@
 namespace Requirejs\View\Helper;
 
 use Cake\Core\Configure;
+use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
 
 class RequireHelper extends Helper
 {
-    
+
     /**
      * {@inherit}
      */
@@ -34,6 +35,20 @@ class RequireHelper extends Helper
     private $_requireLoaded = false;
 
     /**
+     * Constructor method.
+     *
+     * @param array $config The configuration settings provided to this helper.
+     * @return void
+     */
+    public function initialize(array $config)
+    {
+        parent::initialize($config);
+        $this->config('inlineConfig', [
+            'baseUrl' => $this->_getAppBase()
+        ]);
+    }
+
+    /**
      * Fetch all previously loaded modules and requirejs lib path and outputs the
      * `<script>` tag to initialize the loader.
      *
@@ -45,13 +60,33 @@ class RequireHelper extends Helper
      */
     public function load(array $configFiles = [])
     {
-        $config = $configFiles + $this->config('configFiles');
         $this->config('configFiles', $configFiles);
         $inlineConfig = $this->_getInlineConfig();
         $loader = $this->_getLoader();
         $modules = $this->_getModules();
         $this->_requireLoaded = true;
         return $inlineConfig . $loader . $modules;
+    }
+
+    /**
+     * Return the content of CakePHP App.base.
+     * If the App.base value is false, it returns the generated URL automatically
+     * by mimicking how CakePHP add the base to its URL.
+     *
+     * @return string the application base directory
+     */
+    protected function _getAppBase()
+    {
+        $baseUrl = Configure::read('App.base');
+        if (!$baseUrl) {
+            $request = Router::getRequest(true);
+            if (!$request) {
+                $baseUrl = '';
+            } else {
+                $baseUrl = $request->base;
+            }
+        }
+        return $baseUrl . '/';
     }
 
     /**
@@ -68,6 +103,7 @@ class RequireHelper extends Helper
         $script .= json_encode($this->config('inlineConfig'), JSON_UNESCAPED_SLASHES);
         return $this->Html->scriptBlock($script);
     }
+
     /**
      * Return a `<script>` block that initializes the requirejs main configuration
      * file and loads all modules that have been loaded.
@@ -111,7 +147,7 @@ class RequireHelper extends Helper
     /**
      * Add a javascript module to be loaded on the page.
      *
-     * Every module that is called prior to the load() commant should be pre-loaded
+     * Every module that is called prior to the load() command should be pre-loaded
      * and will be outputted along with the loader.
      *
      * Every module that comes after the loader, for example via ajax, should

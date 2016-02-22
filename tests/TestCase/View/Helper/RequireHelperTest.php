@@ -1,6 +1,7 @@
 <?php
 namespace Requirejs\Test\TestCase\View\Helper;
 
+use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 use Cake\View\View;
 use Requirejs\View\Helper\RequireHelper;
@@ -43,12 +44,26 @@ class RequireHelperTest extends TestCase
     {
         $require = new RequireHelper(new ViewTest());
         $result = $require->load(['Test.config']);
-        $expected = 
+        $expected =
 "<script>
 //<![CDATA[
 require(['/test/js/config.js'], function(){require([]);});
 //]]>
 </script>";
+        $this->assertContains($expected, $result);
+    }
+
+    public function testGetAppBase()
+    {
+        Configure::write('App.base', '/myBasePath');
+        $require = new RequireHelper(new ViewTest());
+        $result = $require->load();
+        $expected =
+'<script>
+//<![CDATA[
+var require = {"baseUrl":"/myBasePath/"}
+//]]>
+</script>';
         $this->assertContains($expected, $result);
     }
 
@@ -60,7 +75,7 @@ require(['/test/js/config.js'], function(){require([]);});
             ]
         ]);
         $result = $require->load();
-        $expected = 
+        $expected =
 '<script>
 //<![CDATA[
 var require = {"baseUrl":"/"}
@@ -77,7 +92,7 @@ var require = {"baseUrl":"/"}
             ],
         ]);
         $result = $require->load();
-        $expected = 
+        $expected =
 "<script>
 //<![CDATA[
 require(['/test/js/config.js'], function(){require([]);});
@@ -92,7 +107,7 @@ require(['/test/js/config.js'], function(){require([]);});
         $require->module('ModuleA');
         $require->module('ModuleB');
         $result = $require->load();
-        $expected = 
+        $expected =
 "<script>
 //<![CDATA[
 require([''], function(){require(['ModuleA','ModuleB']);});
@@ -113,7 +128,7 @@ require([''], function(){require(['ModuleA','ModuleB']);});
         $this->assertEquals($result, '');
         $result = $require->load();
         $result = $require->module('ModuleB');
-        $expected = 
+        $expected =
 '<script>
 //<![CDATA[
 require(["ModuleB"]);
